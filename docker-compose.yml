@@ -1,0 +1,51 @@
+version: '2'
+
+services:
+  # PostgreSQL database
+  db:
+    image: postgres:9.4
+    hostname: db
+    ports:
+      - "5432:5432"
+
+  # Redis
+  redis:
+    image: redis
+    hostname: redis
+    ports:
+      - "6379:6379"
+
+  # Django web server
+  django:
+    build:
+      context: .
+      dockerfile: Dockerfile.python
+    hostname: django
+    environment:
+      - PYTHONUNBUFFERED=1
+    command: ./run_backend.sh
+    volumes:
+      - .:/app  # mount current directory inside container
+    ports:
+      - "8000:8000"
+    # set up links so that django knows about db and redis
+    links:
+      - db
+      - redis
+    depends_on:
+      - redis
+      - db
+  
+  # Frontend
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.yarn
+    hostname: frontend
+    volumes:
+      - ./real-time-chat-frontend:/app/
+      - /app/node-modules/
+    ports:
+    - "8080:3000"
+    links:
+      - django
