@@ -5,7 +5,7 @@ FROM node:8.16.0-alpine
 RUN mkdir /app
 WORKDIR /app
 
-# Add package.json
+# Add source
 COPY real-time-chat-frontend/ /app
 
 
@@ -13,4 +13,4 @@ COPY real-time-chat-frontend/ /app
 RUN yarn --pure-lockfile
 
 # Start node server
-# CMD ["yarn", "start", "--verbose"]
+CMD ["yarn", "start", "--verbose"]
