@@ -44,7 +44,7 @@ services:
     hostname: frontend
     command: ./run_frontend.sh
     volumes:
-      - ./real-time-chat-frontend:/app/
+      - ./real-time-chat-frontend:/app
       - /app/node-modules/
     ports:
     - "8080:3000"

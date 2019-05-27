@@ -1,14 +1,16 @@
 # use base node image
 FROM node:8.16.0-alpine
 
-# Add package.json
-ADD real-time-chat-frontend/package.json /app/package.json
-
 # Set working dir 
+RUN mkdir /app
 WORKDIR /app
 
+# Add package.json
+COPY real-time-chat-frontend/ /app
+
+
 # Install dependencies
-# RUN yarn install --verbose
+RUN yarn --pure-lockfile
 
 # Start node server
 # CMD ["yarn", "start", "--verbose"]
