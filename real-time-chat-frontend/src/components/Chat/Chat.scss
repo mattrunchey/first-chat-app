@@ -3,11 +3,11 @@ $white: #fff;
 $grey: #eee;
 
 .chat {
-  height: 100vh;
+  height: 50vh;
 
   .container {
     padding: 0 30px;
-    height: 80%;
+    height: 40%;
 
     &.message-form {
       height: 10%;
@@ -48,7 +48,7 @@ $grey: #eee;
     overflow-y: scroll;
     margin: 0;
     padding: 0;
-    height: 80%;
+    height: 40%;
   }
 
   ul li{

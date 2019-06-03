@@ -43,6 +43,7 @@ services:
       dockerfile: Dockerfile.yarn
     hostname: frontend
     volumes:
-      - /app/node-modules/
+      - ./real-time-chat-frontend:/app
+      - /app/node_modules/
     ports:
     - "8080:3000"

@@ -1,14 +1,14 @@
 import config from '../config';
 
-class WebSocketService {
+class GameWebSocketService {
   static instance = null;
   callbacks = {};
 
   static getInstance() {
-    if (!WebSocketService.instance) {
-      WebSocketService.instance = new WebSocketService();
+    if (!GameWebSocketService.instance) {
+        GameWebSocketService.instance = new GameWebSocketService();
     }
-    return WebSocketService.instance;
+    return GameWebSocketService.instance;
   }
 
   constructor() {
@@ -16,10 +16,11 @@ class WebSocketService {
   }
 
   connect() {
-    const path = config.API_PATH;
+    const path = config.GAME_API_PATH;
+    console.log(path)
     this.socketRef = new WebSocket(path);
     this.socketRef.onopen = () => {
-      console.log('WebSocket open');
+      console.log('GameWebSocket open');
     };
     this.socketRef.onmessage = e => {
       this.socketNewMessage(e.data);
@@ -29,7 +30,7 @@ class WebSocketService {
       console.log(e.message);
     };
     this.socketRef.onclose = () => {
-      console.log("WebSocket closed let's reopen");
+      console.log("GameWebSocket closed let's reopen");
       this.connect();
     };
   }
@@ -41,31 +42,22 @@ class WebSocketService {
     if (Object.keys(this.callbacks).length === 0) {
       return;
     }
-    if (command === 'messages') {
-      this.callbacks[command](parsedData.messages);
+    if (command === 'roll_result'){
+        console.log(this.callbacks)
+        console.log(this.callbacks[command])
+      this.callbacks[command](parsedData.roll_value);
     }
-    if (command === 'new_message') {
-      this.callbacks[command](parsedData.message);
-    }
   }
 
-  initChatUser(username) {
-    this.sendMessage({ command: 'init_chat', username: username });
+  roll() {
+    this.sendMessage({ command: 'roll'});
   }
 
-  fetchMessages(username) {
-    this.sendMessage({ command: 'fetch_messages', username: username });
+  addGameCallbacks(rollCallback) {
+    console.log("Added callback")
+    this.callbacks['roll_result'] = rollCallback;
   }
-
-  newChatMessage(message) {
-    this.sendMessage({ command: 'new_message', from: message.from, text: message.text }); 
-  }
-
-  addCallbacks(messagesCallback, newMessageCallback) {
-    this.callbacks['messages'] = messagesCallback;
-    this.callbacks['new_message'] = newMessageCallback;
-  }
-
+  
   sendMessage(data) {
     try {
       this.socketRef.send(JSON.stringify({ ...data }));
@@ -100,6 +92,6 @@ class WebSocketService {
 
 }
 
-const WebSocketInstance = WebSocketService.getInstance();
+const GameWebSocketInstance = GameWebSocketService.getInstance();
 
-export default WebSocketInstance;
+export default GameWebSocketInstance;

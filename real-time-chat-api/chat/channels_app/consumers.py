@@ -4,6 +4,8 @@ import json
 from chat.core.models.user import User
 from chat.core.models.message import Message
 
+import random
+
 
 class ChatConsumer(WebsocketConsumer):
 
@@ -38,6 +40,10 @@ class ChatConsumer(WebsocketConsumer):
         }
         self.send_chat_message(content)
 
+    def roll(self, data):
+        print("roll tide")
+        self.send_roll_result(random.randint(1,6))
+
     def messages_to_json(self, messages):
         result = []
         for message in messages:
@@ -55,7 +61,8 @@ class ChatConsumer(WebsocketConsumer):
     commands = {
         'init_chat': init_chat,
         'fetch_messages': fetch_messages,
-        'new_message': new_message
+        'new_message': new_message,
+        'roll': roll
     }
 
     def connect(self):
@@ -92,9 +99,49 @@ class ChatConsumer(WebsocketConsumer):
                 'message': message
             }
         )
+    
+    def send_roll_result(self, result):
+        print("rolling out")
+        fmt = {"command" : "roll_result",
+                "roll_value": result}
+        self.send(text_data=json.dumps(fmt))
 
     # Receive message from room group
     def chat_message(self, event):
         message = event['message']
         # Send message to WebSocket
         self.send(text_data=json.dumps(message))
+
+
+
+class GameConsumer(WebsocketConsumer):
+
+    def roll(self, data):
+        print("roll tide")
+        self.send_roll_result(random.randint(1,6))
+
+    def test(self):
+        pass
+
+    commands = {
+        'roll': roll
+    }
+
+    def connect(self):
+        self.accept()
+
+    def disconnect(self, close_code):
+        pass
+
+    def receive(self, text_data):
+        data = json.loads(text_data)
+        self.commands[data['command']](self, data)
+
+    def send_message(self, message):
+        self.send(text_data=json.dumps(message))
+    
+    def send_roll_result(self, result):
+        print("rolling out", result)
+        fmt = {"command" : "roll_result",
+                "roll_value": result}
+        self.send(text_data=json.dumps(fmt))

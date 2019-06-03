@@ -1,0 +1,39 @@
+$blue: #0084ff;
+$white: #fff;
+$grey: #eee;
+
+.game {
+  height: 50vh;
+
+  .game-text {
+    padding: 0 30px;
+    height: 10vh;
+  }
+
+  .progress-bar-container {
+    height: 30vh
+  }
+
+  .game-details {
+    height: 10vh;
+  }
+
+
+
+  h1,h3 {
+    margin-top: 0;
+    color: $blue;
+  }
+
+  button {
+    background-color: $blue;
+    border-color: $blue;
+    border-style: solid;
+    color: white;
+    font-size: 1em;
+    padding: 5px;
+    width: 20%;
+    float: left;
+  }
+
+}

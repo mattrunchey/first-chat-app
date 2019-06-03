@@ -1,8 +1,12 @@
 import React, { Component } from 'react';
 import './App.css';
+import Game from './components/Game'
 import InitChat from './components/InitChat'
 import Chat from './components/Chat'
 import WebSocketInstance from './services/WebSocket'
+import GameWebSocketInstance from './services/GameWebSocket'
+
+import {ProgressBarContainer} from './components/ProgressBar';
 
 export default class App extends Component {
   constructor(props) {
@@ -16,6 +20,7 @@ export default class App extends Component {
   handleLoginSubmit = (username) => {
     this.setState({ loggedIn: true, username: username });
     WebSocketInstance.connect();
+    GameWebSocketInstance.connect();
   }
 
   render() {
@@ -25,18 +30,21 @@ export default class App extends Component {
     } = this.state;
 
     return (
+      loggedIn ? 
+      [<div className="Game">
+          <Game />
+      </div>,
+      <div className="Chat">
+        <Chat
+          currentUser={"username"}
+        />
+      </div>]
+      :
       <div className="App">
-        { 
-          loggedIn ?
-          <Chat
-            currentUser={username}
-          />
-          :
           <InitChat
             onSubmit={this.handleLoginSubmit}
             usernameChangeHandler={this.usernameChangeHandler}
           />
-        }
       </div>
     );
   }
